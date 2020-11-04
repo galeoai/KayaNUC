@@ -3,11 +3,7 @@
 
 /* Prototypes for the functions */
 
-#define N 2048
-
-int read_csv(const char *filename_offset,
-	     const char *filename_gain,
-	     float offset[N][N],
-	     float gain[N][N]);
+int read_csv(const char *filename,
+	     float *matrix);
 
 #endif
