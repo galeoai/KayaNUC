@@ -7,3 +7,7 @@ all:
 	$(CXX) $(CFLAGS) -c ../read_tables/read_nuc.cpp -o read_nuc.o
 	nvcc $(CUDAFLAGS) -c nuc_kernel.cu -o kernel.o
 	$(CXX)  main.o read_nuc.o `pkg-config --libs opencv4 cuda-10.2` kernel.o -lcudart -o main
+
+clean:
+	rm -f *.o main
+
