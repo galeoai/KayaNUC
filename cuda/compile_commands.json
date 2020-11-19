@@ -1,0 +1,32 @@
+[
+    {
+        "arguments": [
+            "c++",
+            "-c",
+            "-I.",
+            "-I/usr/local/cuda/include",
+            "-I/usr/include/opencv4/opencv",
+            "-I/usr/include/opencv4",
+            "-o",
+            "main.o",
+            "main.cpp"
+        ],
+        "directory": "/home/mafat/workspace/KayaNUC/cuda",
+        "file": "main.cpp"
+    },
+    {
+        "arguments": [
+            "c++",
+            "-c",
+            "-I.",
+            "-I/usr/local/cuda/include",
+            "-I/usr/include/opencv4/opencv",
+            "-I/usr/include/opencv4",
+            "-o",
+            "read_nuc.o",
+            "../read_tables/read_nuc.cpp"
+        ],
+        "directory": "/home/mafat/workspace/KayaNUC/cuda",
+        "file": "../read_tables/read_nuc.cpp"
+    }
+]
