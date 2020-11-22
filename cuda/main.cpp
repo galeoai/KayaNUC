@@ -12,7 +12,7 @@ int main(int argc, char *argv[]) {
     Mat img = imread("../data/images/raw.tif", IMREAD_ANYDEPTH);
 
     float *offset, *gain;
-    int *out;
+    uint16_t *out;
 
     offset = (float *)malloc(N * sizeof(float));
     read_csv("../data/NUC/offset.csv", offset);
@@ -20,19 +20,11 @@ int main(int argc, char *argv[]) {
     read_csv("../data/NUC/gain.csv", gain);
     
     // Mat to *int
-    //out = img.ptr<int>(0);
-
-    out = (int *)malloc(N * sizeof(int));
-    for (int i = 0; i < N; ++i)
-    {
-	out[i] = 30;
-    };
-
+    out = img.ptr<uint16_t>(0);
     
     // run the NUC on the GPU
-    std::cout << img.type() << "hi!!!" << std::endl;
     nucCaller(out, gain, offset, N);
-    //imwrite("../data/images/NUC.tif", img);
+    imwrite("../data/images/NUC.tif", img);
 
     printf("done!\n");
 
