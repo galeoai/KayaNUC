@@ -10,26 +10,28 @@ __global__ void nuc(uint16_t *out,const float *gain,const float *offset, int siz
 
 
 void nucCaller(uint16_t *out, float *gain, float *offset, int n){
-    // copy offset to device
+    // d_offset zero-copy
     float *d_offset = NULL;
-    cudaMalloc((void **)&d_offset, n*sizeof(float));
-    cudaMemcpy(d_offset, offset, n*sizeof(float), cudaMemcpyHostToDevice);
-    // copy gain to device
+    cudaHostRegister(offset, n*sizeof(float), cudaHostRegisterMapped);
+    cudaHostGetDevicePointer((void **)&d_offset, (void *)offset, 0);
+    // d_gain zero-copy
     float *d_gain = NULL;
-    cudaMalloc((void **)&d_gain, n*sizeof(float));
-    cudaMemcpy(d_gain, gain, n*sizeof(float), cudaMemcpyHostToDevice);
+    cudaHostRegister(gain, n*sizeof(float), cudaHostRegisterMapped);
+    cudaHostGetDevicePointer((void **)&d_gain, (void *)gain, 0);
+    // d_out zero-copy
     uint16_t *d_out = NULL;
-    cudaMalloc((void **)&d_out, n*sizeof(uint16_t));
-    cudaMemcpy(d_out, out, n*sizeof(uint16_t), cudaMemcpyHostToDevice);
+    cudaHostRegister(out, n*sizeof(uint16_t), cudaHostRegisterMapped);
+    cudaHostGetDevicePointer((void **)&d_out, (void *)out, 0);
+
     int threadsPerBlock = THREADS;
     int blocksPerGrid =(n + threadsPerBlock - 1) / threadsPerBlock;
 
     nuc<<<blocksPerGrid,threadsPerBlock>>>(d_out, d_gain, d_offset,n);
-    cudaMemcpy(out, d_out, n*sizeof(uint16_t), cudaMemcpyDeviceToHost);
 
-    cudaFree(d_out);
-    cudaFree(d_offset);
-    cudaFree(d_gain);
+    // clean up
+    cudaHostUnregister(d_out);
+    cudaHostUnregister(d_offset);
+    cudaHostUnregister(d_gain);
 
     return;
 };
