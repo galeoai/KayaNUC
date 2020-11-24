@@ -3,6 +3,7 @@ module KayaNUC
 using Images, ImageMagick # loading tif files
 using Statistics
 using CSV, Tables
+using HDF5
 
 export make_nuc_tables
 
@@ -34,14 +35,21 @@ function calc_nuc_tif(dark_stack_path::String, flat_stack_path::String)
     return calc_nuc(dark_stack,flat_stack)
 end
 
-function save(nuc::NUC)
-    CSV.write("gain.csv"  ,Tables.table(nuc.gain)  , writeheader=false)
-    CSV.write("offset.csv",Tables.table(nuc.offset), writeheader=false)
+function save(nuc::NUC,format)
+    if format=="csv"
+        CSV.write("gain.csv"  ,Tables.table(nuc.gain)  , writeheader=false)
+        CSV.write("offset.csv",Tables.table(nuc.offset), writeheader=false)
+    elseif format=="hdf5"
+        h5open("nuc_tables.h5", "w") do file
+            write(file, "offset", nuc.offset)
+            write(file, "gain", nuc.gain)
+        end
+    end
 end
 
 function make_nuc_tables(dark_stack_path::String, flat_stack_path::String)
     nuc = calc_nuc_tif(dark_stack_path::String, flat_stack_path::String)
-    save(nuc)
+    save(nuc,"hdf5")
 end
 
 
