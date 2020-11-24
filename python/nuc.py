@@ -26,7 +26,7 @@ def load_nuc(filename):
     output: 
     offset, gain tuple of ndarray 
     """
-    f = h5py.File(filename)
+    f = h5py.File(filename,'r')
     offset = np.array(f["offset"])
     gain = np.array(f["gain"])
     return (offset, gain)
